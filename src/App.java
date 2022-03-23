@@ -6,6 +6,8 @@ public class App {
     public static void main(String[] args) throws Exception {
         Trie newTrie = new Trie();
         newTrie.addWord("monke");
+        print(Boolean.toString(newTrie.searchWord("monke")));
+        print(Boolean.toString(newTrie.searchWord("monk")));
         print(Boolean.toString(newTrie.searchWord("pog")));
     }
 }

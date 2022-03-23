@@ -9,19 +9,17 @@ public class Trie {
     static int nodeIDCounter = 0;
 
     public class Node {
-        private Character identity;
-        private HashMap<Character, Node> children = new HashMap<Character, Node>();
-        private int nodeID = -1;
+        HashMap<Character, Node> children = new HashMap<Character, Node>();
+        int nodeID = -1;
         // boolean wordOver = false; ---> do we need this? just stop when you see you've gotten to a Node with no children I guess
-        Node(Character identity) {
-            this.identity = identity;
+        Node() {
             nodeID = nodeIDCounter;
             graph.add(this);
             nodeIDCounter++;
         }
         public void addChild(Character newChild) {
             if (children.containsKey(newChild)) return;
-            children.put(newChild, new Node(newChild));
+            children.put(newChild, new Node());
             graph.set(nodeID, this);
         }
     }   
@@ -47,7 +45,7 @@ public class Trie {
 
     Trie() {
         for (char letter = 'a'; letter <= 'z'; letter++) {
-            parentNodes.put(letter, new Node(letter));
+            parentNodes.put(letter, new Node());
             graph.add(parentNodes.get(letter));
         }
 
