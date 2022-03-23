@@ -11,7 +11,6 @@ public class Trie {
     public class Node {
         HashMap<Character, Node> children = new HashMap<Character, Node>();
         int nodeID = -1;
-        // boolean wordOver = false; ---> do we need this? just stop when you see you've gotten to a Node with no children I guess
         Node() {
             nodeID = nodeIDCounter;
             graph.add(this);
