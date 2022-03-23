@@ -1,42 +1,65 @@
 
 import java.util.HashMap;
+import java.util.ArrayList;
 
 public class Trie {
+    
+    HashMap<Character, Node> parentNodes = new HashMap<Character, Node>();
+    ArrayList<Node> graph = new ArrayList<Node>();
+    static int nodeIDCounter = 0;
+
     public class Node {
-        // static int numNodes = 0;
-        Character identity;
-        HashMap<Node, Node> children;
-        boolean wordOver = false;
+        private Character identity;
+        private HashMap<Character, Node> children = new HashMap<Character, Node>();
+        private int nodeID = -1;
+        // boolean wordOver = false; ---> do we need this? just stop when you see you've gotten to a Node with no children I guess
         Node(Character identity) {
             this.identity = identity;
-            // numNodes++;
+            nodeID = nodeIDCounter;
+            graph.add(this);
+            nodeIDCounter++;
         }
         public void addChild(Character newChild) {
-            // children[new Node(newChild)];
+            if (children.containsKey(newChild)) return;
+            children.put(newChild, new Node(newChild));
+            graph.set(nodeID, this);
+        }
+        // getters
+        public Character getIdentity() {
+            return identity;
+        }
+        public int getNodeID() {
+            return nodeID;
+        }
+        public HashMap<Character, Node> getChildren() {
+            return children;
         }
     }   
-    public void add(String wordToAdd) {
-        Node currentNode = new Node(wordToAdd.charAt(0));
-        for (int i = 1; i < wordToAdd.length(); i++) {
-            int location = exists(wordToAdd.charAt(i), wordToAdd);
-            // if (location == -1) 
 
-            // currentNode = 
+    public void addWord(String wordToAdd) {
+        int previousNodeIndex = parentNodes.get(wordToAdd.charAt(0)).getNodeID();
+        for (int i = 1; i < wordToAdd.length(); i++) {
+            if (!graph.get(previousNodeIndex).children.containsKey(wordToAdd.charAt(i))) {
+                graph.get(previousNodeIndex).addChild(wordToAdd.charAt(i));
+            }
+            previousNodeIndex = graph.get(previousNodeIndex).children.get(wordToAdd.charAt(i)).nodeID;
         }
     }
-    // int exists(Character toFind, ArrayList<Node> container) {
-    //     for (int i = 0; i < container.length; i++) {
 
-    //     }
-    //     return -1;
-    // }
-    public void search() {
-        dfs();
+    public boolean searchWord(String wordToSearchFor) {
+        int currentNodeIndex = parentNodes.get(wordToSearchFor.charAt(0)).getNodeID();
+        for (int i = 1; i < wordToSearchFor.length(); i++) {
+            if (!graph.get(currentNodeIndex).children.containsKey(wordToSearchFor.charAt(i))) return false;
+            currentNodeIndex = graph.get(currentNodeIndex).children.get(wordToSearchFor.charAt(i)).getNodeID();
+        }
+        return true;
     }
-    // void dfs() {
-    //     boolean vis[]  = new boolean[numNodes];
-    // }
-    public static void main(String[] args) {
-        
+
+    Trie() {
+        for (char letter = 'a'; letter <= 'z'; letter++) {
+            parentNodes.put(letter, new Node(letter));
+            graph.add(parentNodes.get(letter));
+        }
+
     }
 }
