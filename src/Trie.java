@@ -24,20 +24,10 @@ public class Trie {
             children.put(newChild, new Node(newChild));
             graph.set(nodeID, this);
         }
-        // getters
-        public Character getIdentity() {
-            return identity;
-        }
-        public int getNodeID() {
-            return nodeID;
-        }
-        public HashMap<Character, Node> getChildren() {
-            return children;
-        }
     }   
 
     public void addWord(String wordToAdd) {
-        int previousNodeIndex = parentNodes.get(wordToAdd.charAt(0)).getNodeID();
+        int previousNodeIndex = parentNodes.get(wordToAdd.charAt(0)).nodeID; 
         for (int i = 1; i < wordToAdd.length(); i++) {
             if (!graph.get(previousNodeIndex).children.containsKey(wordToAdd.charAt(i))) {
                 graph.get(previousNodeIndex).addChild(wordToAdd.charAt(i));
@@ -47,10 +37,10 @@ public class Trie {
     }
 
     public boolean searchWord(String wordToSearchFor) {
-        int currentNodeIndex = parentNodes.get(wordToSearchFor.charAt(0)).getNodeID();
+        int currentNodeIndex = parentNodes.get(wordToSearchFor.charAt(0)).nodeID;
         for (int i = 1; i < wordToSearchFor.length(); i++) {
             if (!graph.get(currentNodeIndex).children.containsKey(wordToSearchFor.charAt(i))) return false;
-            currentNodeIndex = graph.get(currentNodeIndex).children.get(wordToSearchFor.charAt(i)).getNodeID();
+            currentNodeIndex = graph.get(currentNodeIndex).children.get(wordToSearchFor.charAt(i)).nodeID;
         }
         return true;
     }
