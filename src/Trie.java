@@ -41,16 +41,16 @@ public class Trie {
     }
 
     public boolean search(String wordToSearchFor) {
-        int currentNodeIndex = parentNodes.get(wordToSearchFor.charAt(0)).nodeID;
+        int previousNodeIndex = parentNodes.get(wordToSearchFor.charAt(0)).nodeID;
         String checker = "";
-        checker += graph.get(currentNodeIndex).identity;
+        checker += graph.get(previousNodeIndex).identity;
         for (int i = 1; i < wordToSearchFor.length(); i++) {
-            if (!graph.get(currentNodeIndex).children.containsKey(wordToSearchFor.charAt(i))) {
-                System.out.println(graph.get(currentNodeIndex).identity);
+            if (!graph.get(previousNodeIndex).children.containsKey(wordToSearchFor.charAt(i))) {
                 return false;
             }
-            currentNodeIndex = graph.get(currentNodeIndex).children.get(wordToSearchFor.charAt(i)).nodeID;
-            checker += graph.get(currentNodeIndex).identity;
+            System.out.println(graph.get(previousNodeIndex).identity);
+            previousNodeIndex = graph.get(previousNodeIndex).children.get(wordToSearchFor.charAt(i)).nodeID;
+            checker += graph.get(previousNodeIndex).identity;
         }
         assert(checker.equals(wordToSearchFor));
         return true;
