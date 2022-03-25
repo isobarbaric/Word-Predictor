@@ -56,18 +56,25 @@ public class Trie {
         return true;
     }
 
-    public ArrayList<String> possibleWords(String prefix) {
+    public String possibleWords(String prefix) {
         ArrayList<String> listWords = new ArrayList<String>();
         int lastcharNodeIndex = parentNodes.get(prefix.charAt(0)).nodeID;
         for (int i = 1; i < prefix.length(); i++) {
             if (!graph.get(lastcharNodeIndex).children.containsKey(prefix.charAt(i))) 
-                return listWords;
+                return stringifiedWordList(listWords);
             lastcharNodeIndex = graph.get(lastcharNodeIndex).children.get(prefix.charAt(i)).nodeID;
         }
         boolean visited[] = new boolean[nodeIDCounter];
         for (int i = 0; i < visited.length; i++) visited[i] = false;
         listWords = DepthFirstSearch(prefix, lastcharNodeIndex, visited);
-        return listWords;
+        return stringifiedWordList(listWords);
+    }
+
+    String stringifiedWordList(ArrayList<String> words) {
+        String representation = "";
+        for (int i = 0; i < words.size(); i++) 
+            representation += words.get(i) + ", ";
+        return representation;
     }
 
     public ArrayList<String> DepthFirstSearch(String currentString, int currentNodeIndex, boolean visited[]) {
