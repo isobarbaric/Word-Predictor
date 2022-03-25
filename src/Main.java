@@ -2,51 +2,93 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Collections;
-import javax.swing.JOptionPane;
+import java.awt.Font;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class Main {
 
-    final static String toDisplay = "Enter a prefix to see possible words in the dictionary with that prefix.\nTo quit the program, press 'q'.";
+    private final static String toDisplay = "Enter a prefix to see possible words in the dictionary with that prefix.";
 
-    /**
-     * Takes input from the user using JOptionPane whilst displaying a particular message
-     * @param text - the message to be displayed to the user
-     */
-    public static String input(String text) {
-        return (String) JOptionPane.showInputDialog(null, text, "Word Predictor", JOptionPane.INFORMATION_MESSAGE, null, null, "");  
-    }
+    private static String entered;
  
-    /**
-     * Displays a particular message to the user 
-     * @param text - the message to be displayed to the user
-     */
-    public static void display(String text) {
-        JOptionPane.showMessageDialog(null, text, "Word Predictor", JOptionPane.INFORMATION_MESSAGE, null);
-    }
+    private static Trie trie = new Trie();
+    
+    public static class GUI extends JFrame {
 
-    public static void showUserPossibleWords(Trie currentTrie) {
-        String userResponse = JOptionPane.showInputDialog(toDisplay);
-        if (userResponse.equals("q")) return;
-        else {
-            ArrayList<String> wordsToDisplay = currentTrie.possibleWords(userResponse);
-            Collections.sort(wordsToDisplay, (a, b) -> Integer.compare(a.length(), b.length()));;
-            String listOfWords = "";
-            for (String word: wordsToDisplay) 
-                listOfWords += word + '\n';
-            display(listOfWords);
-            showUserPossibleWords(currentTrie);
+        private JFrame frame;
+        private JPanel panel;
+        private JTextField textField;
+        private JLabel label, listOfWords;
+        private Font fontToBeUsed = new Font("Arial", Font.BOLD, 12);
+    
+        public GUI(String name, String label) {
+            frame = new JFrame(name);
+            panel = new JPanel();
+            panel.setBorder(BorderFactory.createLineBorder(Color.black));
+            textField = new JTextField();
+            textField.setSize(512, 32);
+            textField.setFont(fontToBeUsed);
+            this.label = new JLabel(label);
+            this.label.setFont(fontToBeUsed);
+            listOfWords = new JLabel();
+        }
+    
+        public String obtainPrefixWords(String text) {
+            if (text.length() == 0) return "";
+            return trie.possibleWords(text);
+        }
+    
+        void displayGUI() {
+            panel.add(textField);
+            frame.add(panel);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.pack();
+            frame.setVisible(true);
+            getContentPane().add(textField, BorderLayout.CENTER);
+            getContentPane().add(label, BorderLayout.NORTH);
+            getContentPane().add(listOfWords, BorderLayout.SOUTH);
+            DocumentListener wordFeeder = new DocumentListener() {
+                private void provideRelatedWords() {
+                    listOfWords.setText(obtainPrefixWords(textField.getText()));
+                }
+                @Override
+                public void changedUpdate(DocumentEvent arg0) {
+                    provideRelatedWords();
+                }
+                @Override 
+                public void insertUpdate(DocumentEvent arg0) {
+                    provideRelatedWords();
+                }
+                @Override
+                public void removeUpdate(DocumentEvent arg0) {
+                    provideRelatedWords();
+                }                
+            };
+            textField.getDocument().addDocumentListener(wordFeeder);
+            setSize(512, 128);
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setVisible(true);
+        }
+    
+        public void main() {
+            SwingUtilities.invokeLater(() -> new GUI("Word Predictor", toDisplay).displayGUI());
         }
     }
+
     public static void main(String[] args) throws FileNotFoundException {
+        entered = new String();
         Scanner scanner = new Scanner(new File("src/simple-dictionary.txt"));
-        Trie trie = new Trie();
         ArrayList<String> words = new ArrayList<String>();
         while (scanner.hasNextLine()) {
             String currentWord = scanner.nextLine();
             words.add(currentWord);
             trie.insert(currentWord);    
         }
-        showUserPossibleWords(trie);
+        GUI promptWindow = new GUI("Word Predictor", toDisplay);
+        promptWindow.main();
     }
 }
