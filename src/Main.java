@@ -2,38 +2,43 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
-// import java.util.Collections;
-// import javax.swing.JOptionPane;
+import java.awt.Font;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-// import javax.swing.JButton;
 
 public class Main {
 
-    final static String toDisplay = "Enter a prefix to see possible words in the dictionary with that prefix.\nTo quit the program, press the exit button in the top right corner.";
+    private final static String toDisplay = "Enter a prefix to see possible words in the dictionary with that prefix.";
 
-    static String entered;
-
-    static Trie trie;
-
+    private static String entered;
+ 
+    private static Trie trie = new Trie();
+    
     public static class GUI extends JFrame {
 
         private JFrame frame;
         private JPanel panel;
         private JTextField textField;
         private JLabel label, listOfWords;
+        private Font fontToBeUsed = new Font("Arial", Font.BOLD, 12);
     
         public GUI(String name, String label) {
             frame = new JFrame(name);
             panel = new JPanel();
-            textField = new JTextField("", 20);
+            panel.setBorder(BorderFactory.createLineBorder(Color.black));
+            textField = new JTextField();
+            textField.setSize(512, 32);
+            textField.setFont(fontToBeUsed);
             this.label = new JLabel(label);
+            this.label.setFont(fontToBeUsed);
             listOfWords = new JLabel();
         }
     
         public String obtainPrefixWords(String text) {
+            if (text.length() == 0) return "";
             return trie.possibleWords(text);
         }
     
@@ -44,9 +49,9 @@ public class Main {
             frame.pack();
             frame.setVisible(true);
             getContentPane().add(textField, BorderLayout.CENTER);
-            getContentPane().add(label, BorderLayout.SOUTH);
+            getContentPane().add(label, BorderLayout.NORTH);
             getContentPane().add(listOfWords, BorderLayout.SOUTH);
-            textField.getDocument().addDocumentListener(new DocumentListener() {
+            DocumentListener wordFeeder = new DocumentListener() {
                 private void provideRelatedWords() {
                     listOfWords.setText(obtainPrefixWords(textField.getText()));
                 }
@@ -61,8 +66,9 @@ public class Main {
                 @Override
                 public void removeUpdate(DocumentEvent arg0) {
                     provideRelatedWords();
-                }
-            });
+                }                
+            };
+            textField.getDocument().addDocumentListener(wordFeeder);
             setSize(512, 128);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             setVisible(true);
@@ -71,7 +77,6 @@ public class Main {
         public void main() {
             SwingUtilities.invokeLater(() -> new GUI("Word Predictor", toDisplay).displayGUI());
         }
-    
     }
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -85,6 +90,5 @@ public class Main {
         }
         GUI promptWindow = new GUI("Word Predictor", toDisplay);
         promptWindow.main();
-        // showUserPossibleWords(trie);
     }
 }

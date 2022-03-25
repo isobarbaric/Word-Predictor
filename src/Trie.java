@@ -1,6 +1,7 @@
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Trie {
     
@@ -67,13 +68,14 @@ public class Trie {
         boolean visited[] = new boolean[nodeIDCounter];
         for (int i = 0; i < visited.length; i++) visited[i] = false;
         listWords = DepthFirstSearch(prefix, lastcharNodeIndex, visited);
+        Collections.sort(listWords, (a, b) -> Integer.compare(a.length(), b.length()));
         return stringifiedWordList(listWords);
     }
 
     String stringifiedWordList(ArrayList<String> words) {
-        String representation = "";
+        String representation = "<html>";
         for (int i = 0; i < words.size(); i++) 
-            representation += words.get(i) + ", ";
+            representation += words.get(i) + "<br>";
         return representation;
     }
 
