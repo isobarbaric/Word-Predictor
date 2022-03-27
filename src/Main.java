@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.awt.Font;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -12,32 +13,28 @@ public class Main {
 
     private final static String toDisplay = "Enter a prefix to see possible words in the dictionary with that prefix.";
 
+    private static String entered;
+ 
     private static Trie trie = new Trie();
     
     public static class GUI extends JFrame {
 
-        private JFrame applicationWindow;
-        private JPanel topPanel, bottomPanel;
-        private JTextField userInputField;
-        private JLabel title, wordListDisplay;
-        private JScrollPane scrollBar;
+        private JFrame frame;
+        private JPanel panel;
+        private JTextField textField;
+        private JLabel label, listOfWords;
         private Font fontToBeUsed = new Font("Arial", Font.BOLD, 12);
     
-        public GUI(String name, String title) {
-            applicationWindow = new JFrame(name);
-
-            topPanel = new JPanel();
-            bottomPanel = new JPanel();
-            
-            userInputField = new JTextField();
-            userInputField.setSize(512, 32);
-            userInputField.setFont(fontToBeUsed);
-            
-            this.title = new JLabel(title);
-            this.title.setFont(fontToBeUsed);
-            wordListDisplay = new JLabel();
-
-            scrollBar = new JScrollPane(wordListDisplay, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        public GUI(String name, String label) {
+            frame = new JFrame(name);
+            panel = new JPanel();
+            panel.setBorder(BorderFactory.createLineBorder(Color.black));
+            textField = new JTextField();
+            textField.setSize(512, 32);
+            textField.setFont(fontToBeUsed);
+            this.label = new JLabel(label);
+            this.label.setFont(fontToBeUsed);
+            listOfWords = new JLabel();
         }
     
         public String obtainPrefixWords(String text) {
@@ -45,25 +42,18 @@ public class Main {
             return trie.possibleWords(text);
         }
     
-        void displayGUI() {            
-            topPanel.add(userInputField);
-            applicationWindow.add(topPanel);
-
-            bottomPanel.add(scrollBar);
-            applicationWindow.add(bottomPanel);
-
-            applicationWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            applicationWindow.pack();
-            applicationWindow.setVisible(true);
-
-            getContentPane().add(userInputField, BorderLayout.CENTER);
-            getContentPane().add(title, BorderLayout.NORTH);
-            getContentPane().add(wordListDisplay, BorderLayout.SOUTH);
-            // frame.add(scrollBar);
-            // getContentPane().add(scrollBar, BorderLayout.SOUTH);
+        void displayGUI() {
+            panel.add(textField);
+            frame.add(panel);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.pack();
+            frame.setVisible(true);
+            getContentPane().add(textField, BorderLayout.CENTER);
+            getContentPane().add(label, BorderLayout.NORTH);
+            getContentPane().add(listOfWords, BorderLayout.SOUTH);
             DocumentListener wordFeeder = new DocumentListener() {
                 private void provideRelatedWords() {
-                    wordListDisplay.setText(obtainPrefixWords(userInputField.getText()));
+                    listOfWords.setText(obtainPrefixWords(textField.getText()));
                 }
                 @Override
                 public void changedUpdate(DocumentEvent arg0) {
@@ -78,17 +68,19 @@ public class Main {
                     provideRelatedWords();
                 }                
             };
-            userInputField.getDocument().addDocumentListener(wordFeeder);
-            applicationWindow.setVisible(true);
-            applicationWindow.setSize(512, 128);
-            applicationWindow.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            textField.getDocument().addDocumentListener(wordFeeder);
+            setSize(512, 128);
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setVisible(true);
         }
+    
         public void main() {
             SwingUtilities.invokeLater(() -> new GUI("Word Predictor", toDisplay).displayGUI());
         }
     }
 
     public static void main(String[] args) throws FileNotFoundException {
+        entered = new String();
         Scanner scanner = new Scanner(new File("src/simple-dictionary.txt"));
         ArrayList<String> words = new ArrayList<String>();
         while (scanner.hasNextLine()) {
