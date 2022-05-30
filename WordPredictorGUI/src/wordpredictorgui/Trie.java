@@ -1,3 +1,4 @@
+package wordpredictorgui;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -5,12 +6,12 @@ import java.util.Collections;
 
 public class Trie {
     
-    private HashMap<Character, Node> parentNodes = new HashMap<Character, Node>();
-    private ArrayList<Node> graph = new ArrayList<Node>();
-    static int nodeIDCounter = 0;
+    private final HashMap<Character, Node> parentNodes = new HashMap<>();
+    private final ArrayList<Node> graph = new ArrayList<>();
+    static int nodeIDCounter = 0; 
 
     public class Node {
-        HashMap<Character, Node> children = new HashMap<Character, Node>();
+        HashMap<Character, Node> children = new HashMap<>();
         char identity;
         int nodeID = -1;
         boolean wordOver = false;
@@ -57,30 +58,23 @@ public class Trie {
         return true;
     }
 
-    public String possibleWords(String prefix) {
-        ArrayList<String> listWords = new ArrayList<String>();
+    public ArrayList<String> possibleWords(String prefix) {
+        ArrayList<String> listWords = new ArrayList<>();
         int lastcharNodeIndex = parentNodes.get(prefix.charAt(0)).nodeID;
         for (int i = 1; i < prefix.length(); i++) {
             if (!graph.get(lastcharNodeIndex).children.containsKey(prefix.charAt(i))) 
-                return stringifiedWordList(listWords);
+                return listWords;
             lastcharNodeIndex = graph.get(lastcharNodeIndex).children.get(prefix.charAt(i)).nodeID;
         }
         boolean visited[] = new boolean[nodeIDCounter];
         for (int i = 0; i < visited.length; i++) visited[i] = false;
         listWords = DepthFirstSearch(prefix, lastcharNodeIndex, visited);
         Collections.sort(listWords, (a, b) -> Integer.compare(a.length(), b.length()));
-        return stringifiedWordList(listWords);
-    }
-
-    String stringifiedWordList(ArrayList<String> words) {
-        String representation = "<html>";
-        for (int i = 0; i < words.size(); i++) 
-            representation += words.get(i) + "<br>";
-        return representation;
+        return listWords;
     }
 
     public ArrayList<String> DepthFirstSearch(String currentString, int currentNodeIndex, boolean visited[]) {
-        ArrayList<String> allWords = new ArrayList<String>();
+        ArrayList<String> allWords = new ArrayList<>();
         if (visited[currentNodeIndex]) return allWords;
         visited[currentNodeIndex] = true;
         if (graph.get(currentNodeIndex).wordOver) 
@@ -93,7 +87,7 @@ public class Trie {
     @Override
     public String toString() {
         String toDisplay = "";
-        ArrayList<String> allWords = new ArrayList<String>();
+        ArrayList<String> allWords = new ArrayList<>();
         boolean visited[] = new boolean[nodeIDCounter];
         for (int i = 0; i < visited.length; i++) visited[i] = false;
         for (char letter: parentNodes.keySet())
