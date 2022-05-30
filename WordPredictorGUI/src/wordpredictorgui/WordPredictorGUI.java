@@ -1,7 +1,6 @@
 package wordpredictorgui;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.event.DocumentEvent;
@@ -23,8 +22,9 @@ public class WordPredictorGUI extends javax.swing.JFrame {
         initComponents();
         Scanner scanner = null;
         try {
-            scanner = new Scanner(new File("src/wordpredictorgui/simple-dictionary.txt"));
-        } catch (FileNotFoundException e) {
+            InputStream in = WordPredictorGUI.class.getResourceAsStream("simple-dictionary.txt");
+            scanner = new Scanner(in);
+        } catch (Exception e) {
             System.out.println("Incorrect file path, please change the file path and try again. :D");
             return;
         }
