@@ -1,4 +1,4 @@
-package wordpredictorgui;
+package wordpredictor;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -7,64 +7,85 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
-public class WordPredictorGUI extends javax.swing.JFrame {
+public class WordPredictor extends javax.swing.JFrame {
 
+	// a Trie object to load the words in the dictionary provided and provide predictions based on that 
     private static final Trie currentTrie;
     
+	// a static-block for safe initialization of the static variable 
     static {
+		// initialization of the currentTrie object
         currentTrie = new Trie();
     }
     
     /**
      * Creates new form WordPredictorGUI
      */
-    public WordPredictorGUI() {
-        initComponents();
+    public WordPredictor() {
+        // calling initComponents to set up the configuration for the GUI
+		initComponents();
+		
+		// declaring a Scanner object to read words from the file containing the dictionary
         Scanner scanner = null;
+		
+		// using a try-catch to catch any Exceptions raised by the InputStream object
         try {
-            InputStream in = WordPredictorGUI.class.getResourceAsStream("simple-dictionary.txt");
-            scanner = new Scanner(in);
+			
+			// accessing the 'simple-dictionary.txt' file to load words from
+            InputStream in = WordPredictor.class.getResourceAsStream("simple-dictionary.txt");
+
+			// initializing scanner with the InputStream
+			scanner = new Scanner(in);
         } catch (Exception e) {
+			// printing out an error message to the user if the file path provided was not correct
             System.out.println("Incorrect file path, please change the file path and try again. :D");
-            return;
+
+			return;
         }
-        ArrayList<String> words = new ArrayList<>();
+		
+		// using a while loop to loop through the file containing all of the words
         while (scanner.hasNextLine()) {
+			// taking input of the word in the current line in the file
             String currentWord = scanner.nextLine();
-            words.add(currentWord);
+			
+			// inserting this word into the Trie object
             currentTrie.insert(currentWord);    
         }
-        DefaultTableModel model = (DefaultTableModel) possibleWordsTable.getModel();
-        // calling the getRowCount() method to obtain the number of rows in the table
-        int numRows = model.getRowCount();
-        // looping through the rows (zero-based)
-        for (int i = numRows - 1; i >= 0; i--) {
-            // deleting each row with its index value
-            model.removeRow(i);
-        }
-    }
+
+	}
     
     private ArrayList<String> obtainPrefixWords(String text) {
+		// declaring an ArrayList to store the words associated with the prefix string text
         ArrayList<String> currentWords = new ArrayList<>();
-        if (text.length() != 0) 
+
+		// error-checking by ensuring that the string provided is not empty 
+		if (text.length() != 0) 
+			// accessing associated words by a call to the possibleWords method on the currentTrie object
             currentWords = currentTrie.possibleWords(text);
-        return currentWords;
+        
+		return currentWords;
     }
     
     private void provideRelatedWords() {
-        ArrayList<String> relatedWordsFound = obtainPrefixWords(wordTextField.getText());
-        // declaring and instantiating a DefaultTableModel object to be able to add rows to it later on
+        // getting the prefix words associated with the user input entered in the text field
+		ArrayList<String> relatedWordsFound = obtainPrefixWords(wordTextField.getText());
+
+		// declaring and instantiating a DefaultTableModel object to be able to add rows to it later on
         DefaultTableModel model = (DefaultTableModel) possibleWordsTable.getModel();
-        // calling the getRowCount() method to obtain the number of rows in the table
+        
+		// calling the getRowCount() method to obtain the number of rows in the table
         int numRows = model.getRowCount();
-        // looping through the rows (zero-based)
+
+		// looping through the rows (zero-based)
         for (int i = numRows - 1; i >= 0; i--) {
             // deleting each row with its index value
             model.removeRow(i);
         }
-        // declaring and instantiating a DefaultTableModel object to be able to add rows to it later on
+
+		// declaring and instantiating a DefaultTableModel object to be able to add rows to it later on
         model = (DefaultTableModel) possibleWordsTable.getModel();
-        // adding words to it now
+
+		// adding words found to be related to the entered word to the JTable
         for (String word: relatedWordsFound) {
             model.addRow(new Object[]{word});
         }
@@ -170,36 +191,12 @@ public class WordPredictorGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * @param args the command line arguments
+	 * A main method to run the GUI to allow user-interaction with the Trie object
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(WordPredictorGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(WordPredictorGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(WordPredictorGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(WordPredictorGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new WordPredictorGUI().setVisible(true);
+                new WordPredictor().setVisible(true);
             }
         });
     }
