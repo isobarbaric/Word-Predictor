@@ -2,11 +2,9 @@
 # Word-Predictor
 
 ### Table of Contents
-- [Word-Predictor](#word-predictor)
-    - [Table of Contents](#table-of-contents)
-    - [Description for this Project](#description-for-this-project)
-    - [Try It Out Yourself!](#try-it-out-yourself)
- 
+1. [Description for this Project](#description-for-this-project)
+2. [Try It Out Yourself!](#try-it-out-yourself)
+
 ### Description for this Project
 
 Word-Predictor aims to implement a robust auto-complete functionality! 
