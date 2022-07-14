@@ -9,95 +9,96 @@ import javax.swing.table.DefaultTableModel;
 
 public class WordPredictor extends javax.swing.JFrame {
 
-	// a Trie object to load the words in the dictionary provided and provide predictions based on that 
+    // a Trie object to load the words in the dictionary provided and provide predictions based on that
     private static final Trie currentTrie;
-    
-	// a static-block for safe initialization of the static variable 
+
+    // a static-block for safe initialization of the static variable
     static {
-		// initialization of the currentTrie object
+        // initialization of the currentTrie object
         currentTrie = new Trie();
     }
-    
+
     /**
      * Creates new form WordPredictorGUI
      */
     public WordPredictor() {
         // calling initComponents to set up the configuration for the GUI
-		initComponents();
-		
-		// declaring a Scanner object to read words from the file containing the dictionary
+        initComponents();
+
+        // declaring a Scanner object to read words from the file containing the dictionary
         Scanner scanner = null;
-		
-		// using a try-catch to catch any Exceptions raised by the InputStream object
+
+        // using a try-catch to catch any Exceptions raised by the InputStream object
         try {
-			
-			// accessing the 'simple-dictionary.txt' file to load words from
+
+            // accessing the 'simple-dictionary.txt' file to load words from
             InputStream in = WordPredictor.class.getResourceAsStream("simple-dictionary.txt");
 
-			// initializing scanner with the InputStream
-			scanner = new Scanner(in);
+            // initializing scanner with the InputStream
+            scanner = new Scanner(in);
         } catch (Exception e) {
-			// printing out an error message to the user if the file path provided was not correct
+            // printing out an error message to the user if the file path provided was not correct
             System.out.println("Incorrect file path, please change the file path and try again. :D");
 
-			return;
-        }
-		
-		// using a while loop to loop through the file containing all of the words
-        while (scanner.hasNextLine()) {
-			// taking input of the word in the current line in the file
-            String currentWord = scanner.nextLine();
-			
-			// inserting this word into the Trie object
-            currentTrie.insert(currentWord);    
+            return;
         }
 
-	}
-    
+        // using a while loop to loop through the file containing all of the words
+        while (scanner.hasNextLine()) {
+            // taking input of the word in the current line in the file
+            String currentWord = scanner.nextLine();
+
+            // inserting this word into the Trie object
+            currentTrie.insert(currentWord);
+        }
+
+    }
+
     private ArrayList<String> obtainPrefixWords(String text) {
-		// declaring an ArrayList to store the words associated with the prefix string text
+        // declaring an ArrayList to store the words associated with the prefix string text
         ArrayList<String> currentWords = new ArrayList<>();
 
-		// error-checking by ensuring that the string provided is not empty 
-		if (text.length() != 0) 
-			// accessing associated words by a call to the possibleWords method on the currentTrie object
+        // error-checking by ensuring that the string provided is not empty
+        if (text.length() != 0)
+            // accessing associated words by a call to the possibleWords method on the currentTrie object
             currentWords = currentTrie.possibleWords(text);
-        
-		return currentWords;
+
+        return currentWords;
     }
-    
+
     private void provideRelatedWords() {
         // getting the prefix words associated with the user input entered in the text field
-		ArrayList<String> relatedWordsFound = obtainPrefixWords(wordTextField.getText());
+        ArrayList<String> relatedWordsFound = obtainPrefixWords(wordTextField.getText());
 
-		// declaring and instantiating a DefaultTableModel object to be able to add rows to it later on
+        // declaring and instantiating a DefaultTableModel object to be able to add rows to it later on
         DefaultTableModel model = (DefaultTableModel) possibleWordsTable.getModel();
-        
-		// calling the getRowCount() method to obtain the number of rows in the table
+
+        // calling the getRowCount() method to obtain the number of rows in the table
         int numRows = model.getRowCount();
 
-		// looping through the rows (zero-based)
+        // looping through the rows (zero-based)
         for (int i = numRows - 1; i >= 0; i--) {
             // deleting each row with its index value
             model.removeRow(i);
         }
 
-		// declaring and instantiating a DefaultTableModel object to be able to add rows to it later on
+        // declaring and instantiating a DefaultTableModel object to be able to add rows to it later on
         model = (DefaultTableModel) possibleWordsTable.getModel();
 
-		// adding words found to be related to the entered word to the JTable
-        for (String word: relatedWordsFound) {
-            model.addRow(new Object[]{word});
+        // adding words found to be related to the entered word to the JTable
+        for (String word : relatedWordsFound) {
+            model.addRow(new Object[] { word });
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         detailsLabel = new javax.swing.JLabel();
@@ -119,16 +120,15 @@ public class WordPredictor extends javax.swing.JFrame {
         possibleWordsTable.getTableHeader().setFont(new java.awt.Font("Cascadia Code PL", 0, 12));
         possibleWordsTable.setFont(new java.awt.Font("Cascadia Code PL", 0, 12)); // NOI18N
         possibleWordsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null}
-            },
-            new String [] {
-                "Possible Words"
-            }
-        ));
+                new Object[][] {
+                        { null },
+                        { null },
+                        { null },
+                        { null }
+                },
+                new String[] {
+                        "Possible Words"
+                }));
         jScrollPane1.setViewportView(possibleWordsTable);
         possibleWordsTable.getAccessibleContext().setAccessibleDescription("");
 
@@ -137,37 +137,45 @@ public class WordPredictor extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(wordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(148, 148, 148))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(titleLabel)
-                        .addGap(138, 138, 138))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(detailsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14))))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(22, 22, 22)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(22, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout
+                                                .createSequentialGroup()
+                                                .addComponent(wordTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(148, 148, 148))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                layout.createSequentialGroup()
+                                                        .addComponent(titleLabel)
+                                                        .addGap(138, 138, 138))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout
+                                                .createSequentialGroup()
+                                                .addComponent(detailsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 452,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(14, 14, 14)))));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(titleLabel)
-                .addGap(18, 18, 18)
-                .addComponent(detailsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(wordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(30, 30, 30)
+                                .addComponent(titleLabel)
+                                .addGap(18, 18, 18)
+                                .addComponent(detailsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12)
+                                .addComponent(wordTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10,
+                                        Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(22, 22, 22)));
 
         wordTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -191,7 +199,7 @@ public class WordPredictor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-	 * A main method to run the GUI to allow user-interaction with the Trie object
+     * A main method to run the GUI to allow user-interaction with the Trie object
      */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
